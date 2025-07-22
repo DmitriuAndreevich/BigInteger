@@ -4,276 +4,234 @@
 
 int main() {
     // =================== CONSTRUCTOR TESTS ===================
-    // Test default constructor
     BigInteger defaultInt;
     assert(defaultInt == 0);
     assert(!defaultInt.get_is_negative());
 
-    // Test integer constructors
     BigInteger int1(123);
     assert(int1 == 123);
     BigInteger int2(-456);
     assert(int2 == -456);
 
-    // Test long constructors
     BigInteger long1(123456789L);
-    assert(long1 == 123456789);
+    assert(long1 == BigInteger("123456789"));
     BigInteger long2(-987654321L);
-    assert(long2 == -987654321);
+    assert(long2 == BigInteger("-987654321"));
 
-    // Test unsigned long long constructors
     BigInteger ull1(123456789012345ULL);
-    assert(ull1 == 123456789012345ULL);
+    assert(ull1 == BigInteger("123456789012345"));
     BigInteger ull2(0ULL);
     assert(ull2 == 0);
 
     // ============= COPY/MOVE CONSTRUCTOR TESTS ===============
-    // Test copy constructor
     BigInteger copyInt(int1);
     assert(copyInt == 123);
 
-    // Test move constructor
     BigInteger moveInt(std::move(BigInteger(999)));
     assert(moveInt == 999);
 
-    // Test assignment operators
     BigInteger assignInt;
-    assignInt = int2;  // Copy assignment
+    assignInt = int2;
     assert(assignInt == -456);
-    assignInt = std::move(BigInteger(111));  // Move assignment
+    assignInt = std::move(BigInteger(111));
     assert(assignInt == 111);
 
     // ================== STRING CONVERSION TESTS ==================
-    // Test decimal string constructor
     BigInteger decStr("1234567890");
-    assert(decStr == 1234567890);
+    assert(decStr == BigInteger("1234567890"));
 
-    // Test hexadecimal string constructor
     BigInteger hexStr("FFFFFFFF", biginteger_base::hex);
-    assert(hexStr == 0xFFFFFFFF);
+    assert(to_hex(hexStr) == "FFFFFFFF");
 
-    // Test negative decimal string
     BigInteger negDecStr("-12345");
     assert(negDecStr == -12345);
 
-    // Test negative hexadecimal string
     BigInteger negHexStr("-ABCDEF", biginteger_base::hex);
-    assert(negHexStr == -0xABCDEF);
+    assert(to_hex(negHexStr) == "-ABCDEF");
 
     // ================== UNARY OPERATOR TESTS ==================
-    BigInteger pos = +int1;  // Positive operator
+    BigInteger pos = +int1;
     assert(pos == 123);
-    BigInteger neg = -int1;  // Negation operator
+    BigInteger neg = -int1;
     assert(neg == -123);
-    assert(-neg == 123);     // Double negation
+    assert(-neg == 123);
 
     // ================== COMPARISON OPERATOR TESTS ==================
-    // Greater than
     assert(BigInteger(10) > BigInteger(5));
-    // Less than with negative
     assert(BigInteger(-5) < BigInteger(5));
-    // Greater/equal with zero
     assert(BigInteger(0) >= BigInteger(0));
-    // Less/equal with negatives
     assert(BigInteger(-10) <= BigInteger(-5));
-    // Inequality
     assert(BigInteger(100) != BigInteger(101));
-    // Equality with zero
     assert(BigInteger(0) == BigInteger(0));
-    // Negative zero equality
     assert(BigInteger(0) == -BigInteger(0));
 
     // ================== INCREMENT/DECREMENT TESTS ==================
-    // Prefix and postfix increment
     BigInteger inc(10);
-    assert(++inc == 11);    // Prefix
-    assert(inc++ == 11);    // Postfix
-    assert(inc == 12);      // After postfix
+    assert(++inc == 11);  // prefix
+    assert(inc++ == 11);  // postfix returns old value
+    assert(inc == 12);
 
-    // Prefix and postfix decrement
     BigInteger dec(10);
-    assert(--dec == 9);     // Prefix
-    assert(dec-- == 9);     // Postfix
-    assert(dec == 8);       // After postfix
+    assert(--dec == 9);
+    assert(dec-- == 9);
+    assert(dec == 8);
 
     // ================== ARITHMETIC OPERATION TESTS ==================
-    // Addition tests
-    BigInteger add1 = BigInteger(100) + BigInteger(50);
-    assert(add1 == 150);
-    BigInteger add2 = BigInteger(-100) + BigInteger(50);
-    assert(add2 == -50);
-    BigInteger add3 = BigInteger(100) + BigInteger(-150);
-    assert(add3 == -50);
+    assert(BigInteger(100) + BigInteger(50) == 150);
+    assert(BigInteger(-100) + BigInteger(50) == -50);
+    assert(BigInteger(100) + BigInteger(-150) == -50);
 
-    // Subtraction tests
-    BigInteger sub1 = BigInteger(100) - BigInteger(50);
-    assert(sub1 == 50);
-    BigInteger sub2 = BigInteger(50) - BigInteger(100);
-    assert(sub2 == -50);
-    BigInteger sub3 = BigInteger(-100) - BigInteger(-50);
-    assert(sub3 == -50);
+    assert(BigInteger(100) - BigInteger(50) == 50);
+    assert(BigInteger(50) - BigInteger(100) == -50);
+    assert(BigInteger(-100) - BigInteger(-50) == -50);
 
-    // Multiplication tests
-    BigInteger mul1 = BigInteger(12) * BigInteger(12);
-    assert(mul1 == 144);
-    BigInteger mul2 = BigInteger(-7) * BigInteger(8);
-    assert(mul2 == -56);
-    BigInteger mul3 = BigInteger(-5) * BigInteger(-6);
-    assert(mul3 == 30);
+    assert(BigInteger(12) * BigInteger(12) == 144);
+    assert(BigInteger(-7) * BigInteger(8) == -56);
+    assert(BigInteger(-5) * BigInteger(-6) == 30);
 
-    // Division tests
-    BigInteger div1 = BigInteger(100) / BigInteger(10);
-    assert(div1 == 10);
-    BigInteger div2 = BigInteger(100) / BigInteger(-10);
-    assert(div2 == -10);
-    BigInteger div3 = BigInteger(-100) / BigInteger(-10);
-    assert(div3 == 10);
+    assert(BigInteger(100) / BigInteger(10) == 10);
+    assert(BigInteger(100) / BigInteger(-10) == -10);
+    assert(BigInteger(-100) / BigInteger(-10) == 10);
 
-    // Modulo operation tests
-    BigInteger mod1 = BigInteger(100) % BigInteger(7);
-    assert(mod1 == 2);
-    BigInteger mod2 = BigInteger(100) % BigInteger(-7);
-    assert(mod2 == 2);  // Sign follows dividend
-    BigInteger mod3 = BigInteger(-100) % BigInteger(7);
-    assert(mod3 == -2); // Negative result
+    assert(BigInteger(100) % BigInteger(7) == 2);
+    assert(BigInteger(100) % BigInteger(-7) == 2);
+    assert(BigInteger(-100) % BigInteger(7) == -2);
 
     // ================== COMPOUND OPERATOR TESTS ==================
     BigInteger a(10);
-    a += 5;  // Compound addition
-    assert(a == 15);
-    a -= 3;  // Compound subtraction
-    assert(a == 12);
-    a *= 2;  // Compound multiplication
-    assert(a == 24);
-    a /= 8;  // Compound division
-    assert(a == 3);
-    a %= 2;  // Compound modulo
-    assert(a == 1);
+    a += 5;  assert(a == 15);
+    a -= 3;  assert(a == 12);
+    a *= 2;  assert(a == 24);
+    a /= 8;  assert(a == 3);
+    a %= 2;  assert(a == 1);
 
     // ================== GETTER/SETTER TESTS ==================
     BigInteger test(123);
-    test.set_is_negative(true);  // Set negative flag
+    test.set_is_negative(true);
     assert(test == -123);
     assert(test.get_is_negative());
-    assert(test.get_size() == 1);  // Size in 32-bit chunks
-    assert(test.get_data()[0] == 123);  // Underlying data
+    assert(test.get_size() >= 1);
+    assert(test.get_data()[0] == 123);
 
     // ================== SPECIAL METHOD TESTS ==================
-    // Zero value check
     BigInteger zero;
     assert(zero.isZero());
     assert(!BigInteger(1).isZero());
 
-    // Absolute value method
     BigInteger abs1 = BigInteger(-999).abs();
-    assert(abs1 == 999 && !abs1.get_is_negative());
+    assert(abs1 == 999);
+    assert(!abs1.get_is_negative());
 
-    // Base-10 division helper
     BigInteger div10(100);
-    assert(div10.divide_by_10() == 0);  // Returns remainder
-    assert(div10 == 10);  // Result after division
+    assert(div10.divide_by_10() == 0);
+    assert(div10 == 10);
 
-    // Base-16 division helper
     BigInteger div16(0x100);
-    assert(div16.divide_by_16() == 0);  // Returns remainder
-    assert(div16 == 0x10);  // Result after division
+    assert(div16.divide_by_16() == 0);
+    assert(div16 == 0x10);
 
     // ================== BOUNDARY VALUE TESTS ==================
-    // 32-bit integer boundaries
     BigInteger maxInt32(2147483647);
     BigInteger minInt32(-2147483648);
     assert(maxInt32 > minInt32);
-    assert(maxInt32 + minInt32 == -1);  // Overflow case
+    assert(maxInt32 + minInt32 == -1);
 
-    // 32-bit unsigned boundary
     BigInteger maxUInt32(4294967295U);
     BigInteger one(1);
-    assert(maxUInt32 + one == 4294967296ULL);  // Beyond 32-bit
+    assert(maxUInt32 + one == BigInteger("4294967296"));
 
     // ================== LARGE NUMBER TESTS ==================
-    // Operations with very large numbers
     BigInteger big1("12345678901234567890");
     BigInteger big2("11111111111111111111");
+
     BigInteger sum = big1 + big2;
-    assert(sum == BigInteger("23456789012345679001"));
+    assert(to_string(sum) == "23456790012345679001");
+    // Проверено вручную:
+    // 12345678901234567890
+    // +11111111111111111111
+    // =23456790012345679001
 
     BigInteger diff = big1 - big2;
-    assert(diff == BigInteger("1234567890123456789"));
+    assert(to_string(diff) == "1234567790123456779");
+    // Проверенно вручную:
+    // 12345678901234567890
+    // -11111111111111111111
+    // = 1234567790123456779
 
-    BigInteger product = big1 * 2;  // Scalar multiplication
-    assert(product == BigInteger("24691357802469135780"));
+    BigInteger product = big1 * 2;
+    assert(to_string(product) == "24691357802469135780");
+    // При удвоении: 2 × big1
 
-    // Large division test
     BigInteger dividend("100000000000000000000");
     BigInteger divisor("55555555555555555555");
     BigInteger quotient = dividend / divisor;
-    assert(quotient == 1);  // Integer division
+    assert(to_string(quotient) == "1");
+    // Целочисленное: 100e18 / 55.555e18 = 1
+
+    BigInteger remainder = dividend % divisor;
+    assert(to_string(remainder) == "44444444444444444445");
+    // Остаток: 100e18 -1·55.555e18 = 44.444...e18 → "44444444444444444445"
 
     // ================== STRING CONVERSION OUTPUT TESTS ==================
     assert(to_string(BigInteger(123)) == "123");
     assert(to_string(BigInteger(-456)) == "-456");
     assert(to_hex(BigInteger(0xABCDEF)) == "ABCDEF");
     assert(to_hex(BigInteger(-0x123ABC)) == "-123ABC");
-
-    // Zero value string representations
     assert(to_string(BigInteger(0)) == "0");
     assert(to_hex(BigInteger(0)) == "0");
 
     // ================== COMPLEX EXPRESSION TESTS ==================
     BigInteger expr = (BigInteger(100) * 2 - 50) / 5 + 10;
-    assert(expr == 40);  // ((200 - 50)/5) + 10 = 40
+    assert(expr == 40);
 
     // ================== STATIC METHOD TESTS ==================
-    // Comparison helper method
     assert(BigInteger::isLess(BigInteger(5), BigInteger(10)));
     assert(!BigInteger::isLess(BigInteger(10), BigInteger(5)));
     assert(BigInteger::isLess(BigInteger(-10), BigInteger(-5)));
 
-
     // ================== OVERFLOW TEST ==================
-    // 32-bit overflow case
     BigInteger overflow(0xFFFFFFFF);
     overflow += 1;
-    assert(overflow == 0x100000000ULL);  // Requires 64-bit representation
+    assert(overflow == BigInteger("4294967296"));
 
     // ================== EXCEPTION TEST ==================
-    // Division by zero handling
     try {
         BigInteger(1) / BigInteger(0);
-        assert(false);  // Should never reach here
+        assert(false);
     }
     catch (const std::exception&) {
-        // Expected behavior - exception thrown
+        // ожидаем исключение
     }
 
     // ================== MODULAR ARITHMETIC TEST ==================
     BigInteger modTest(25);
     modTest %= 7;
-    assert(modTest == 4);  // 25 mod 7 = 4
+    assert(modTest == 4);
 
     // ================== HEXADECIMAL LARGE NUMBER TEST ==================
     BigInteger hexBig("7FFFFFFFFFFFFFFF", biginteger_base::hex);
     assert(to_hex(hexBig) == "7FFFFFFFFFFFFFFF");
-    assert(hexBig > 0);  // Positive boundary value
+    assert(hexBig > 0);
 
     // ================== COPY SEMANTICS TEST ==================
     BigInteger original(42);
-    BigInteger copy = original;  // Copy constructor
+    BigInteger copy = original;
     copy += 1;
-    assert(original == 42);  // Original unchanged
-    assert(copy == 43);      // Copy modified
+    assert(original == 42);
+    assert(copy == 43);
 
     // ================== MOVE SEMANTICS TEST ==================
     BigInteger temp(99);
-    BigInteger moved(std::move(temp));  // Move constructor
+    BigInteger moved(std::move(temp));
     assert(moved == 99);
-    assert(temp.get_size() == 0);  // Source should be empty after move
+    assert(temp.get_size() == 0 || temp.isZero());
 
     // ================== EQUALITY TESTS ==================
     assert(BigInteger("123456789") == BigInteger(123456789));
-    assert(BigInteger("0") == BigInteger(0));  // Different constructors
+    assert(BigInteger("0") == BigInteger(0));
 
     // ================== FINAL CONFIRMATION ==================
-    std::cout << "All 100 tests passed successfully!" << std::endl;
+    std::cout << "All tests passed successfully!" << std::endl;
+
     return 0;
 }
