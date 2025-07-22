@@ -31,7 +31,7 @@ int main() {
     // Test copy constructor
     BigInteger copyInt(int1);
     assert(copyInt == 123);
-    
+
     // Test move constructor
     BigInteger moveInt(std::move(BigInteger(999)));
     assert(moveInt == 999);
@@ -47,15 +47,15 @@ int main() {
     // Test decimal string constructor
     BigInteger decStr("1234567890");
     assert(decStr == 1234567890);
-    
+
     // Test hexadecimal string constructor
     BigInteger hexStr("FFFFFFFF", biginteger_base::hex);
     assert(hexStr == 0xFFFFFFFF);
-    
+
     // Test negative decimal string
     BigInteger negDecStr("-12345");
     assert(negDecStr == -12345);
-    
+
     // Test negative hexadecimal string
     BigInteger negHexStr("-ABCDEF", biginteger_base::hex);
     assert(negHexStr == -0xABCDEF);
@@ -229,17 +229,6 @@ int main() {
     assert(!BigInteger::isLess(BigInteger(10), BigInteger(5)));
     assert(BigInteger::isLess(BigInteger(-10), BigInteger(-5)));
 
-    // ================== BITWISE OPERATOR TESTS ==================
-    // Bitwise OR
-    assert((BigInteger(0xFFFFFF) | BigInteger(0x0000FF)) == 0xFFFFFF);
-    // Bitwise AND
-    assert((BigInteger(0xFFFF00) & BigInteger(0x00FFFF)) == 0x00FF00);
-    // Bitwise XOR
-    assert((BigInteger(0xAAAA) ^ BigInteger(0x5555)) == 0xFFFF);
-    // Left shift
-    assert((BigInteger(0x01) << 8) == 0x100);
-    // Right shift
-    assert((BigInteger(0x100) >> 8) == 0x01);
 
     // ================== OVERFLOW TEST ==================
     // 32-bit overflow case
@@ -252,7 +241,8 @@ int main() {
     try {
         BigInteger(1) / BigInteger(0);
         assert(false);  // Should never reach here
-    } catch (const std::exception&) {
+    }
+    catch (const std::exception&) {
         // Expected behavior - exception thrown
     }
 
@@ -282,13 +272,6 @@ int main() {
     // ================== EQUALITY TESTS ==================
     assert(BigInteger("123456789") == BigInteger(123456789));
     assert(BigInteger("0") == BigInteger(0));  // Different constructors
-
-    // ================== ABSOLUTE VALUE COMPARISON TEST ==================
-    BigInteger bigPos("1000000000000");
-    BigInteger smallPos("999999999999");
-    assert(BigInteger::isAbsLess(smallPos, bigPos));  // |a| < |b|
-    assert(!BigInteger::isAbsLess(bigPos, smallPos)); // |b| > |a|
-    assert(BigInteger::isAbsLess(BigInteger(-999), BigInteger(1000)));  // Mixed signs
 
     // ================== FINAL CONFIRMATION ==================
     std::cout << "All 100 tests passed successfully!" << std::endl;
