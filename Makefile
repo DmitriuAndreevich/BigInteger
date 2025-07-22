@@ -1,5 +1,5 @@
 CC = clang++
-CFLAGS = -std=c++17 -Wall -Wextra
+CFLAGS = -std=c++17
 LDFLAGS =
 
 SOURCES = main.cpp
