@@ -19,7 +19,7 @@ jobs:
       - name: Get repository code
         uses: actions/checkout@v4
 
-      - name: Build
+       - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install valgrind
@@ -30,13 +30,15 @@ jobs:
           g++ --version
           gcc --version
 
+      - name: Build
+        run: |
           make
           if [ $? -ne 0 ]; then
             echo "Build failed!"
             exit 1
           fi
           !(grep -qwRE --include=*.{cc,cpp,h} '#include <(list|algorithm|stack|queue|deque|set|map)>' ./* ) &&  (echo \"Build...\" )  || ( echo \"Forbiden STL containers\" && exit 9 )
-
+      
       - name: Static Analysis with clang-tidy
         run: |
           mkdir build
