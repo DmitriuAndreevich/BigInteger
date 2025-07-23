@@ -2,7 +2,9 @@
 #include <cstdint>
 #include <string>
 #include <stdexcept>
+
 //---------------------------------------П Р И В А Т Н Ы Е   Ф У Н К Ц И И-------------------------------------------------------------
+
 //Функция увеличения памяти
 void BigInteger::resize(size_t new_size) {
     uint32_t* new_data = new uint32_t[new_size]();
@@ -14,6 +16,7 @@ void BigInteger::resize(size_t new_size) {
     data = new_data;
     size = new_size;
 }
+
 void BigInteger::create_from_dec_string(const std::string& str) {
     if (str.empty()) {
         data = new uint32_t[1]{ 0 };
@@ -55,6 +58,7 @@ void BigInteger::create_from_dec_string(const std::string& str) {
         throw std::invalid_argument(error_message.what());
     }
 }
+
 void BigInteger::create_from_hex_string(const std::string& str) {
     if (str.empty()) {
         data = new uint32_t[1]{ 0 };
@@ -116,6 +120,7 @@ bool BigInteger::isAbsLess(const BigInteger& left, const BigInteger& right) {
     }
     return false;
 }
+
 void BigInteger::absolute_difference(uint32_t*& data, size_t& size,
     const uint32_t* other_data, size_t other_size) {
     // data всегда больше other_data
@@ -148,16 +153,21 @@ void BigInteger::absolute_difference(uint32_t*& data, size_t& size,
         throw std::logic_error("data < other_data");
     }
 }
+
 //-------------------------------------К О Н С Т Р У К Т О Р Ы------------------------------------------------------------------------
+
 BigInteger::BigInteger() : data(new uint32_t[1]{ 0 }), size(1), is_negative(false) {}
+
 BigInteger::BigInteger(int num)
     : data(new uint32_t[1]{ static_cast<uint32_t>((num > 0) ? num : -num) }),
     size(1),
     is_negative(num < 0) {}
+
 BigInteger::BigInteger(unsigned int num)
     : data(new uint32_t[1]{ static_cast<uint32_t>(num) }),
     size(1),
     is_negative(false) {}
+
 BigInteger::BigInteger(long num) {
     is_negative = (num < 0);
     uint64_t abs_num = static_cast<uint64_t>(is_negative ? -num : num);
@@ -175,6 +185,7 @@ BigInteger::BigInteger(long num) {
         data = new_data;
     }
 }
+
 BigInteger::BigInteger(long long num) {
     is_negative = (num < 0);
     uint64_t abs_num = static_cast<uint64_t>(is_negative ? -num : num);
@@ -192,6 +203,7 @@ BigInteger::BigInteger(long long num) {
         data = new_data;
     }
 }
+
 BigInteger::BigInteger(unsigned long num) : is_negative(false) {
     uint64_t abs_num = static_cast<uint64_t>(num);
     data = new uint32_t[2]{
@@ -200,6 +212,7 @@ BigInteger::BigInteger(unsigned long num) : is_negative(false) {
     };
     size = (data[1] == 0) ? 1 : 2; // Удаление ведущих нулей
 }
+
 BigInteger::BigInteger(unsigned long long num) : is_negative(false) {
     uint64_t abs_num = static_cast<uint64_t>(num);
     data = new uint32_t[2]{
@@ -208,6 +221,7 @@ BigInteger::BigInteger(unsigned long long num) : is_negative(false) {
     };
     size = (data[1] == 0) ? 1 : 2; // Удаление ведущих нулей
 }
+
 BigInteger::BigInteger(const BigInteger& other) : is_negative(other.is_negative) {
     data = new uint32_t[other.size];
     for (size_t i = 0; i < other.size; ++i) {
@@ -215,10 +229,12 @@ BigInteger::BigInteger(const BigInteger& other) : is_negative(other.is_negative)
     }
     size = other.size;
 }
+
 BigInteger::BigInteger(BigInteger&& other) noexcept : data(other.data), size(other.size) {
     other.data = nullptr;
     other.size = 0;
 }
+
 BigInteger::BigInteger(std::string str, biginteger_base base) {
     if (str.empty()) {
         throw std::invalid_argument("String is empty");
@@ -265,9 +281,11 @@ BigInteger::BigInteger(std::string str, biginteger_base base) {
     }
     }
 }
+
 BigInteger::~BigInteger() {
     delete[] data;
 }
+
 //------------------------------------------------О П Е Р А Т О Р Ы----------------------------------------------------------------------
 //Оператор копирования
 BigInteger& BigInteger::operator=(const BigInteger& other) {
@@ -282,17 +300,20 @@ BigInteger& BigInteger::operator=(const BigInteger& other) {
     }
     return *this;
 }
+
 //Оператор перемещения
 BigInteger& BigInteger::operator=(BigInteger&& other) noexcept {
     if (*this != other) {
         delete[] data;
         data = other.data;
         size = other.size;
+        is_negative = other.is_negative;
         other.size = 0;
         other.data = nullptr;
     }
     return *this;
 }
+
 //Унарные операторы
 BigInteger BigInteger::operator-() const {
     BigInteger result(*this);
@@ -301,9 +322,12 @@ BigInteger BigInteger::operator-() const {
     }
     return result;
 }
+
 BigInteger BigInteger::operator+() const {
     return *this;
 }
+
+
 //Операторы сравнения
 bool BigInteger::operator!=(const BigInteger& other) const {
     return !(*this == other);
@@ -320,6 +344,8 @@ bool BigInteger::operator>(const BigInteger& other) const {
 bool BigInteger::operator>=(const BigInteger& other) const {
     return !isLess(*this, other);
 }
+
+
 //Инкремент и декремент
 BigInteger& BigInteger::operator++() { //Префиксный 
     *this += BigInteger(1);
@@ -339,10 +365,11 @@ BigInteger BigInteger::operator--(int) { //Постфиксный
     --*this;
     return temp;
 }
+
+
 //Арифмитические операторы
 BigInteger& BigInteger::operator+=(const BigInteger& other) {
-    if (is_negative == other.get_is_negative()) {
-        //Новые данные для суммы
+    if (is_negative == other.is_negative) {  //Новые данные для суммы
         size_t max_size = std::max(size, other.get_size());
         uint32_t* new_data = new uint32_t[max_size + 1]();
         uint64_t carry = 0;
@@ -408,71 +435,53 @@ BigInteger& BigInteger::operator+=(const BigInteger& other) {
     }
     return *this;
 }
+
 BigInteger& BigInteger::operator-=(const BigInteger& other) {
     BigInteger temp = other;
     temp.set_is_negative(!other.get_is_negative());
     return *this += temp;
 }
 
-BigInteger& BigInteger::operator*=(const BigInteger& other) { // Если текущий объект уже ноль, результат остается нулем
-    if (isZero()) {
-        return *this;
-    }
-
-    // Если другой объект ноль, обнуляем текущий
-    if (other.isZero()) {
-        delete[] data;
-        data = new uint32_t[1]{ 0 };
-        size = 1;
-        is_negative = false;
-        return *this;
-    }
-
+BigInteger& BigInteger::operator*=(const BigInteger& other) {
+    // Обработка знака результата
     bool result_negative = (is_negative != other.is_negative);
-    const uint32_t* a_data = data;          // Указатель на данные текущего числа
-    const uint32_t* b_data = other.get_data(); // Данные другого числа
-    size_t a_size = size;                   // Размер текущего числа 
-    size_t b_size = other.get_size();       // Размер другого числа
-    size_t result_size = a_size + b_size;   // Максимально возможный размер результата
-    uint32_t* result_data = new uint32_t[result_size](); // Выделяем память под результат 
-
-
-    // Внешний цикл по разрядам второго числа (b_data[j])
-    for (size_t j = 0; j < b_size; ++j) {
-        uint64_t carry = 0; // Перенос для текущего разряда b_data[j]
-
-        // Внутренний цикл по разрядам первого числа (a_data[i])
-        for (size_t i = 0; i < a_size; ++i) {
-            // Вычисляем произведение текущих 32-битных блоков как 64-битное число
+    // Работа с абсолютными значениями
+    const uint32_t* a_data = data;
+    const uint32_t* b_data = other.get_data();
+    size_t a_size = size;
+    size_t b_size = other.get_size();
+    /// 999 * 999 < 998 001 < 1 000 000 (любое n значное число * на любое m значное < n + m значное число)
+    size_t result_size = a_size + b_size;
+    uint32_t* result_data = new uint32_t[result_size](); // Инициализация нулями
+    // Умножение в столбик
+    for (size_t i = 0; i < a_size; ++i) {
+        uint64_t carry = 0; // Перенос для текущего разряда
+        for (size_t j = 0; j < b_size; ++j) {
+            // Произведение текущих разрядов + перенос + текущее значение в result
             uint64_t product = (uint64_t)a_data[i] * b_data[j];
-
-            // Суммируем с предыдущим значением в result_data и переносом
             uint64_t sum = product + result_data[i + j] + carry;
-            // Записываем младшие 32 бита суммы в результат
+            // Обновление текущего разряда
             result_data[i + j] = static_cast<uint32_t>(sum);
-            // Новый перенос - старшие 32 бита
+            // Вычисление нового переноса
             carry = sum >> 32;
         }
-        // После обработки всех разрядов a_data, перенос может сохраняться
-        size_t k = j + a_size; // Индекс первого старшего разряда после текущего блока
-        while (carry > 0 && k < result_size) {
-            // Добавляем перенос к текущему разряду результата
-            uint64_t sum = static_cast<uint64_t>(result_data[k]) + carry;
-            result_data[k] = static_cast<uint32_t>(sum);
-
-            // Обновляем перенос
-            carry = sum >> 32;
-
-            ++k; // Переходим к следующему разряду
+        // Добавление оставшегося переноса в старшие разряды
+        if (carry > 0) {
+            result_data[i + b_size] += static_cast<uint32_t>(carry);
         }
     }
+    // Обновление данных текущего объекта
     delete[] data;
     data = result_data;
     size = result_size;
     is_negative = result_negative;
-
+    // Удаление ведущих нулей
     while (size > 1 && data[size - 1] == 0) {
         --size;
+    }
+    // Обработка нуля
+    if (size == 1 && data[0] == 0) {
+        is_negative = false;
     }
     return *this;
 }
@@ -532,6 +541,7 @@ BigInteger& BigInteger::operator/=(const BigInteger& divisor) {
     *this = quotient;
     return *this;
 }
+
 BigInteger& BigInteger::operator%=(const BigInteger& other) {
     if (other.isZero()) {
         throw std::invalid_argument("Modulo by zero");
@@ -545,6 +555,7 @@ BigInteger& BigInteger::operator%=(const BigInteger& other) {
     }
     return *this;
 }
+
 //------------------------------------------------Г Е Т Т Е Р Ы   И   С Е Т Т Е Р Ы---------------------------------------------------------
 //Геттеры
 bool BigInteger::get_is_negative() const {
@@ -556,6 +567,7 @@ size_t BigInteger::get_size() const {
 const uint32_t* BigInteger::get_data() const {
     return data;
 }
+
 //Сеттер
 void BigInteger::set_is_negative(bool set_value) {
     is_negative = set_value;
@@ -566,9 +578,11 @@ BigInteger BigInteger::abs() const {
     temp.is_negative = false;
     return temp;
 }
+
 bool BigInteger::isZero() const {
     return (*this == 0);
 }
+
 int BigInteger::divide_by_10() {
     if (size == 1 && data[0] == 0) {
         return 0;
@@ -603,6 +617,7 @@ int BigInteger::divide_by_10() {
     }
     return static_cast<int>(remainder);
 }
+
 int BigInteger::divide_by_16() {
     if (size == 1 && data[0] == 0) {
         return 0;
@@ -637,6 +652,7 @@ int BigInteger::divide_by_16() {
     }
     return static_cast<int>(remainder);
 }
+
 bool BigInteger::isLess(const BigInteger& left, const BigInteger& right) {
     if (left == right) {
         return false;
@@ -649,7 +665,9 @@ bool BigInteger::isLess(const BigInteger& left, const BigInteger& right) {
     }
     return isAbsLess(left, right);
 }
+
 //-----------------------------------------------------------В Н Е Ш Н И Е----------------------------------------------------------------
+
 //Бинарный оператор сравнения
 bool operator==(const BigInteger& left, const BigInteger& right) {
     if (left.get_is_negative() != right.get_is_negative() || left.get_size() != right.get_size()) {
@@ -662,6 +680,7 @@ bool operator==(const BigInteger& left, const BigInteger& right) {
     }
     return true;
 }
+
 //Перевод BigInteger в строку
 std::string to_string(const BigInteger& b_int) {
     if (b_int.isZero()) {
@@ -680,6 +699,7 @@ std::string to_string(const BigInteger& b_int) {
     std::reverse(result.begin(), result.end());
     return result;
 }
+
 std::string to_hex(const BigInteger& b_int) {
     if (b_int.isZero()) {
         return "0";
@@ -698,6 +718,9 @@ std::string to_hex(const BigInteger& b_int) {
     std::reverse(result.begin(), result.end());
     return result;
 }
+//Бинарные операторы сравнения
+
+
 //Бинарные арифметические операторы
 BigInteger operator+(const BigInteger& left, const BigInteger& right) {
     BigInteger result = left;
