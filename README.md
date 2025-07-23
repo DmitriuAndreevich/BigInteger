@@ -12,8 +12,9 @@ This project provides a basic implementation of a BigInteger class in C++, allow
 *   Static Analysis: Uses Clang-Tidy for static code analysis.
 *   Memory Leak Detection: Uses Valgrind to detect memory leaks.
 
-## Project Structure
+## Project Structure\
 
+```plaintext
 BigInteger/
 ├── CMakeLists.txt         # CMake build configuration file
 ├── README.md              # This file
@@ -23,6 +24,7 @@ BigInteger/
 │   └── biginteger.hpp      # Header file for the BigInteger class
 ├── main.cpp                # Example usage of the BigInteger class
 └── test.cpp                # Unit tests for the BigInteger class
+```
 
 ## Building the Project
 Prerequisites:
