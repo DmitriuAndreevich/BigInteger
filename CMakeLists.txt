@@ -12,10 +12,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_INIT} -Wall -Wextra -Wno-unused-var
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_INIT} -O3 -DNDEBUG")
 
 # Define the BigInteger library (if BigInteger is in a separate file biginteger.cpp)
-add_library(biginteger STATIC include/biginteger.cpp) # Or SHARED
+add_library(biginteger STATIC src/biginteger.cpp) # Or SHARED
 
 # Define the test executable
-add_executable(run_tests test.cpp include/biginteger.cpp) # Create the test executable
+add_executable(run_tests test.cpp src/biginteger.cpp) # Create the test executable
 
 # Link BigInteger with the tests (if needed - if test.cpp calls BigInteger functions)
 target_link_libraries(run_tests biginteger)
