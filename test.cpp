@@ -1,6 +1,6 @@
 #include <cassert>
 #include <iostream>
-#include "biginteger.hpp"
+#include "include/biginteger.hpp"
 
 int test() {
     // =================== CONSTRUCTOR TESTS ===================
