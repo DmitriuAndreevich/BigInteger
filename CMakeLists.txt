@@ -23,4 +23,4 @@ add_executable(run_tests test.cpp)
 target_link_libraries(run_tests biginteger)
 
 # Add the testing target
-add_test(BigInteger_AllTests run_tests)
+add_test(NAME BigInteger_AllTests COMMAND run_tests)
