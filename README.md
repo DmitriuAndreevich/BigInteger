@@ -20,14 +20,14 @@ BigInteger/
 ├── README.md              # This file
 ├── src/                    # Source code directory
 │   └── biginteger.cpp       # Implementation of the BigInteger class
-├── include/                # Header file directory (May not exist if header is not separate)
+├── include/                # Header file directory
 │   └── biginteger.hpp      # Header file for the BigInteger class
 ├── main.cpp                # Example usage of the BigInteger class
 └── test.cpp                # Unit tests for the BigInteger class
 ```
 
-## Building the Project
-Prerequisites:
-    *   CMake (version 3.14 or higher)
-    *   A C++ compiler (GCC, Clang, or similar)
-    *   (Optional) Valgrind for memory leak detection
+## Prerequisites:
+
+ *   CMake (version 3.14 or higher)
+ *   A C++ compiler (GCC, Clang, or similar)
+ *   (Optional) Valgrind for memory leak detection
