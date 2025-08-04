@@ -12,7 +12,7 @@ This project provides a basic implementation of a BigInteger class in C++, allow
 *   Static Analysis: Uses Clang-Tidy for static code analysis.
 *   Memory Leak Detection: Uses Valgrind to detect memory leaks.
 
-## Project Structure\
+## Project Structure
 
 ```plaintext
 BigInteger/
